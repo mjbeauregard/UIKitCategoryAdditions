@@ -19,11 +19,9 @@ static CancelBlock _cancelBlock;
           otherButtonTitles:(NSArray*) otherButtons
                   onDismiss:(DismissBlock) dismissed                   
                    onCancel:(CancelBlock) cancelled {
-    
-    [_cancelBlock release];
+
     _cancelBlock  = [cancelled copy];
 
-    [_dismissBlock release];
     _dismissBlock  = [dismissed copy];
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
@@ -36,7 +34,7 @@ static CancelBlock _cancelBlock;
         [alert addButtonWithTitle:buttonTitle];
     
     [alert show];
-    return [alert autorelease];
+    return alert;
 }
 
 + (UIAlertView*) alertViewWithTitle:(NSString*) title 
@@ -56,7 +54,7 @@ static CancelBlock _cancelBlock;
                                           cancelButtonTitle:cancelButtonTitle
                                           otherButtonTitles: nil];
     [alert show];
-    return [alert autorelease];
+    return alert;
 }
 
 
@@ -70,10 +68,8 @@ static CancelBlock _cancelBlock;
     {
         _dismissBlock(buttonIndex - 1); // cancel button is button 0
     }
-    
-    [_cancelBlock release];
+
     _cancelBlock = nil;
-    [_dismissBlock release];
     _dismissBlock = nil;
 }
 
