@@ -29,6 +29,7 @@ static UIViewController *_presentVC;
                                onCancel:cancelled];
 }
 
+
 + (void) actionSheetWithTitle:(NSString*) title                     
        destructiveButtonTitle:(NSString*) destructiveButtonTitle
                       buttons:(NSArray*) buttonTitles
@@ -36,25 +37,12 @@ static UIViewController *_presentVC;
                     onDismiss:(DismissBlock) dismissed                   
                      onCancel:(CancelBlock) cancelled
 {
-    _cancelBlock  = [cancelled copy];
+    UIActionSheet *actionSheet = [UIActionSheet actionSheetWithTitle:title
+                                              destructiveButtonTitle:nil
+                                                             buttons:buttonTitles
+                                                           onDismiss:dismissed
+                                                            onCancel:cancelled];
 
-    _dismissBlock  = [dismissed copy];
-
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title 
-                                                             delegate:(id <UIActionSheetDelegate>)[self class] 
-                                                    cancelButtonTitle:nil
-                                               destructiveButtonTitle:destructiveButtonTitle 
-                                                    otherButtonTitles:nil];
-    
-    for(NSString* thisButtonTitle in buttonTitles)
-        [actionSheet addButtonWithTitle:thisButtonTitle];
-    
-    [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", @"")];
-    actionSheet.cancelButtonIndex = [buttonTitles count];
-    
-    if(destructiveButtonTitle)
-        actionSheet.cancelButtonIndex ++;
-    
     if([view isKindOfClass:[UIView class]])
         [actionSheet showInView:view];
     
@@ -66,6 +54,31 @@ static UIViewController *_presentVC;
 
 }
 
++ (UIActionSheet *)actionSheetWithTitle:(NSString *)title
+                 destructiveButtonTitle:(NSString *)destructiveButtonTitle
+                                buttons:(NSArray *)buttonTitles
+                              onDismiss:(DismissBlock)dismissed
+                               onCancel:(CancelBlock)cancelled {
+    _cancelBlock = [cancelled copy];
+    _dismissBlock = [dismissed copy];
+
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:title
+                                                             delegate:(id <UIActionSheetDelegate>) [self class]
+                                                    cancelButtonTitle:nil destructiveButtonTitle:destructiveButtonTitle
+                                                    otherButtonTitles:nil];
+
+    for (NSString *thisButtonTitle in buttonTitles)
+        [actionSheet addButtonWithTitle:thisButtonTitle];
+
+    [actionSheet addButtonWithTitle:NSLocalizedString(@"Cancel", @"")];
+    actionSheet.cancelButtonIndex = [buttonTitles count];
+
+    if (destructiveButtonTitle)
+        actionSheet.cancelButtonIndex++;
+
+    return actionSheet;
+}
+
 + (void) photoPickerWithTitle:(NSString*) title
                    showInView:(UIView*) view
                     presentVC:(UIViewController*) presentVC
@@ -73,9 +86,7 @@ static UIViewController *_presentVC;
                      onCancel:(CancelBlock) cancelled
 {
     _cancelBlock  = [cancelled copy];
-
     _photoPickedBlock  = [photoPicked copy];
-
     _presentVC = presentVC;
     
     int cancelButtonIndex = -1;

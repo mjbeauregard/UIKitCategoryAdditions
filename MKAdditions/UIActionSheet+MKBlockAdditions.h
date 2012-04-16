@@ -25,6 +25,12 @@
                      onCancel:(CancelBlock) cancelled;
 
 
++(UIActionSheet *) actionSheetWithTitle:(NSString *) title
+                 destructiveButtonTitle:(NSString *) destructiveButtonTitle
+                                buttons:(NSArray *) buttonTitles
+                              onDismiss:(DismissBlock) dismissed
+                               onCancel:(CancelBlock) cancelled;
+
 + (void) photoPickerWithTitle:(NSString*) title
                    showInView:(UIView*) view
                     presentVC:(UIViewController*) presentView
